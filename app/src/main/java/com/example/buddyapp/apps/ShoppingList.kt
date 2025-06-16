@@ -24,11 +24,14 @@ fun ShoppingList(
     onBack: () -> Unit,
     viewModel: ShoppingListViewModel = viewModel()
 ) {
+    // Text field input state
     var itemName by remember { mutableStateOf("") }
     var itemQty by remember { mutableStateOf("1") }
 
+    // Editing index
     var editingIndex by remember { mutableStateOf<Int?>(null) }
 
+    // Shopping list from ViewModel
     val shoppingList = viewModel.shoppingList
 
     Column(
@@ -36,6 +39,7 @@ fun ShoppingList(
             .fillMaxSize()
             .padding(24.dp)
     ) {
+        // Title
         Text(
             text = "Shopping List",
             fontSize = 24.sp,
@@ -44,6 +48,7 @@ fun ShoppingList(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Input section: name and quantity
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = itemName,
@@ -69,6 +74,7 @@ fun ShoppingList(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Add or Update button
         Button(
             onClick = {
                 val qty = itemQty.toIntOrNull() ?: 1
@@ -90,12 +96,14 @@ fun ShoppingList(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Empty list message
         if (shoppingList.isEmpty()) {
             Text(
                 text = "No items yet",
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         } else {
+            // List of items
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.weight(1f)
@@ -107,12 +115,14 @@ fun ShoppingList(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
+                            // ✅ Checkbox for item
                             Checkbox(
                                 checked = item.isChecked,
                                 onCheckedChange = {
                                     viewModel.toggleItem(index, it)
                                 }
                             )
+                            // 📄 Item text with optional strikethrough
                             Text(
                                 "${item.name} x${item.quantity}",
                                 style = if (item.isChecked)
@@ -123,6 +133,7 @@ fun ShoppingList(
                                 else MaterialTheme.typography.bodyLarge
                             )
                         }
+                        // Edit and  Delete buttons
                         Row {
                             IconButton(onClick = {
                                 itemName = item.name
@@ -144,6 +155,7 @@ fun ShoppingList(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //  Back button
         Button(
             onClick = onBack,
             modifier = Modifier.align(Alignment.CenterHorizontally)

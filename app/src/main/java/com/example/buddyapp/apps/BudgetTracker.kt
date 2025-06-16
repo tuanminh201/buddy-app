@@ -23,11 +23,13 @@ fun BudgetTracker(
     onBack: () -> Unit,
     viewModel: BudgetTrackerViewModel = viewModel()
 ) {
+    // State variables for input fields and edit state
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var isExpense by remember { mutableStateOf(true) }
     var editingIndex by remember { mutableStateOf<Int?>(null) }
 
+    // Get current list and total from ViewModel
     val items = viewModel.budgetItems
     val totalAmount = viewModel.total()
 
@@ -36,6 +38,7 @@ fun BudgetTracker(
             .fillMaxSize()
             .padding(24.dp)
     ) {
+        //  Title
         Text(
             text = "Budget Tracker",
             fontSize = 24.sp,
@@ -44,6 +47,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Total display with dynamic color (green if positive, red if negative)
         Text(
             text = "Total: €${String.format("%.2f", totalAmount)}",
             fontSize = 20.sp,
@@ -53,6 +57,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //  Name input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -63,6 +68,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Amount input
         OutlinedTextField(
             value = amount,
             onValueChange = { amount = it },
@@ -74,6 +80,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        //  Switch to choose between expense or income
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Expense")
             Switch(
@@ -85,6 +92,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        //  Add or ️ Update button
         Button(
             onClick = {
                 val value = amount.toDoubleOrNull()
@@ -95,6 +103,7 @@ fun BudgetTracker(
                     } else {
                         viewModel.addItem(name, value, isExpense)
                     }
+                    // Reset input
                     name = ""
                     amount = ""
                     isExpense = true
@@ -107,6 +116,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // List of budget entries
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
@@ -118,14 +128,16 @@ fun BudgetTracker(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val amountText = (if (item.isExpense) "-€" else "+€") + item.amount
-                    val amountColor = if (item.isExpense) Color.Red else Color(0xFF2E7D32)
+                    val amountColor = if (item.isExpense) Color.Red else Color(0xFF2E7D32)  // color
 
+                    //  Display item name and value
                     Text(
                         text = "${item.name}: $amountText",
                         fontSize = 16.sp,
                         color = amountColor
                     )
 
+                    // Edit and Delete actions
                     Row {
                         IconButton(onClick = {
                             name = item.name
@@ -145,6 +157,7 @@ fun BudgetTracker(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Back button
         Button(
             onClick = onBack,
             modifier = Modifier.align(Alignment.CenterHorizontally)
