@@ -1,28 +1,35 @@
 package com.example.buddyapp.apps
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.buddyapp.model.ShoppingItem
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.buddyapp.viewmodel.ShoppingListViewModel
 
 @Composable
-fun ShoppingList(onBack: () -> Unit) {
+fun ShoppingList(
+    onBack: () -> Unit,
+    viewModel: ShoppingListViewModel = viewModel()
+) {
     var itemName by remember { mutableStateOf("") }
     var itemQty by remember { mutableStateOf("1") }
-    val shoppingList = remember { mutableStateListOf<ShoppingItem>() }
+
+    var editingIndex by remember { mutableStateOf<Int?>(null) }
+
+    val shoppingList = viewModel.shoppingList
 
     Column(
         modifier = Modifier
@@ -30,7 +37,7 @@ fun ShoppingList(onBack: () -> Unit) {
             .padding(24.dp)
     ) {
         Text(
-            text = "🛒 Shopping List",
+            text = "Shopping List",
             fontSize = 24.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -43,50 +50,57 @@ fun ShoppingList(onBack: () -> Unit) {
                 onValueChange = { itemName = it },
                 label = { Text("Item name") },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                 modifier = Modifier.weight(2f)
             )
-
             Spacer(modifier = Modifier.width(8.dp))
-
             OutlinedTextField(
                 value = itemQty,
-                onValueChange = {
-                    if (it.all { ch -> ch.isDigit() }) itemQty = it
-                },
+                onValueChange = { itemQty = it },
                 label = { Text("Qty") },
                 singleLine = true,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.weight(1f)
             )
+        }
 
-            Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = {
+        Button(
+            onClick = {
                 val qty = itemQty.toIntOrNull() ?: 1
-                if (itemName.isNotBlank() && qty > 0) {
-                    shoppingList.add(ShoppingItem(itemName.trim(), qty))
+                if (itemName.isNotBlank()) {
+                    if (editingIndex != null) {
+                        viewModel.updateItem(editingIndex!!, itemName, qty)
+                        editingIndex = null
+                    } else {
+                        viewModel.addItem(itemName, qty)
+                    }
                     itemName = ""
                     itemQty = "1"
                 }
-            }) {
-                Text("Add")
-            }
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(if (editingIndex != null) "Update Item" else "Add Item")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         if (shoppingList.isEmpty()) {
-            Text("No items yet 🥲", modifier = Modifier.align(Alignment.CenterHorizontally))
+            Text(
+                text = "No items yet",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.weight(1f)
             ) {
                 itemsIndexed(shoppingList) { index, item ->
-                    var isEditing by remember { mutableStateOf(false) }
-                    var editName by remember { mutableStateOf(item.name) }
-                    var editQty by remember { mutableStateOf(item.quantity.toString()) }
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -96,61 +110,30 @@ fun ShoppingList(onBack: () -> Unit) {
                             Checkbox(
                                 checked = item.isChecked,
                                 onCheckedChange = {
-                                    shoppingList[index] = item.copy(isChecked = it)
+                                    viewModel.toggleItem(index, it)
                                 }
                             )
-
-                            if (isEditing) {
-                                Column {
-                                    OutlinedTextField(
-                                        value = editName,
-                                        onValueChange = { editName = it },
-                                        label = { Text("Name") },
-                                        singleLine = true,
-                                        modifier = Modifier.width(150.dp)
+                            Text(
+                                "${item.name} x${item.quantity}",
+                                style = if (item.isChecked)
+                                    MaterialTheme.typography.bodyLarge.copy(
+                                        textDecoration = TextDecoration.LineThrough,
+                                        color = MaterialTheme.colorScheme.outline
                                     )
-                                    OutlinedTextField(
-                                        value = editQty,
-                                        onValueChange = {
-                                            if (it.all { ch -> ch.isDigit() }) editQty = it
-                                        },
-                                        label = { Text("Qty") },
-                                        singleLine = true,
-                                        modifier = Modifier.width(80.dp),
-                                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-                                    )
-                                }
-                            } else {
-                                Text(
-                                    text = "${item.name} (x${item.quantity})",
-                                    style = if (item.isChecked)
-                                        MaterialTheme.typography.bodyLarge.copy(
-                                            textDecoration = TextDecoration.LineThrough,
-                                            color = MaterialTheme.colorScheme.outline
-                                        )
-                                    else MaterialTheme.typography.bodyLarge
-                                )
-                            }
+                                else MaterialTheme.typography.bodyLarge
+                            )
                         }
-
                         Row {
-                            if (isEditing) {
-                                IconButton(onClick = {
-                                    val qty = editQty.toIntOrNull() ?: item.quantity
-                                    if (editName.isNotBlank() && qty > 0) {
-                                        shoppingList[index] = item.copy(name = editName.trim(), quantity = qty)
-                                        isEditing = false
-                                    }
-                                }) {
-                                    Icon(Icons.Default.Check, contentDescription = "Save")
-                                }
-                            } else {
-                                IconButton(onClick = { isEditing = true }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                                }
+                            IconButton(onClick = {
+                                itemName = item.name
+                                itemQty = item.quantity.toString()
+                                editingIndex = index
+                            }) {
+                                Icon(Icons.Default.Edit, contentDescription = "Edit")
                             }
-
-                            IconButton(onClick = { shoppingList.removeAt(index) }) {
+                            IconButton(onClick = {
+                                viewModel.removeItem(index)
+                            }) {
                                 Icon(Icons.Default.Delete, contentDescription = "Delete")
                             }
                         }
@@ -165,7 +148,7 @@ fun ShoppingList(onBack: () -> Unit) {
             onClick = onBack,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text("⬅ Back")
+            Text("Back")
         }
     }
 }

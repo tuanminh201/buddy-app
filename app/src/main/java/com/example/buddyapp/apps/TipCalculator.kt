@@ -28,7 +28,7 @@ fun TipCalculator(onBack: () -> Unit) {
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("💁 Tip Calculator", fontSize = 24.sp)
+        Text(" Tip Calculator", fontSize = 24.sp)
 
         OutlinedTextField(
             value = amountInput,

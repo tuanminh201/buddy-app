@@ -12,11 +12,12 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun UnitConverter(onBack: () -> Unit) {
-    val categories = listOf("Length", "Weight", "Temperature")
+    val categories = listOf("Length", "Weight", "Temperature", "Currency")
     val unitMap = mapOf(
         "Length" to listOf("Meters", "Kilometers"),
         "Weight" to listOf("Kilograms", "Grams"),
-        "Temperature" to listOf("Celsius", "Fahrenheit")
+        "Temperature" to listOf("Celsius", "Fahrenheit"),
+        "Currency" to listOf("Euros", "Dollars")
     )
 
     var selectedCategory by remember { mutableStateOf(categories[0]) }
@@ -77,6 +78,7 @@ fun UnitConverter(onBack: () -> Unit) {
                     "Length" -> convertLength(inputValue, fromUnit, toUnit)
                     "Weight" -> convertWeight(inputValue, fromUnit, toUnit)
                     "Temperature" -> convertTemperature(inputValue, fromUnit, toUnit)
+                    "Currency" -> convertCurrency(inputValue, fromUnit, toUnit)
                     else -> "N/A"
                 }
             } else {
@@ -162,4 +164,14 @@ fun convertTemperature(value: Double, from: String, to: String): String {
         else -> value
     }
     return "$result $to"
+}
+
+fun convertCurrency(value: Double, from: String, to: String): String {
+    val rate = 1.15
+    val result = when {
+        from == "Euros" && to == "Dollars" -> value * rate
+        from == "Dollars" && to == "Euros" -> value / rate
+        else -> value
+    }
+    return String.format("%.2f %s", result, to)
 }
