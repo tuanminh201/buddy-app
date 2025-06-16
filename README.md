@@ -5,7 +5,7 @@ It was created as a hands-on exercise to practice Kotlin and explore modern Andr
 
 ---
 
-## 📱 Features
+##  Features
 
 - **Shopping List**  
   Add items with quantities, mark as done, edit, or delete them easily.
@@ -21,7 +21,7 @@ It was created as a hands-on exercise to practice Kotlin and explore modern Andr
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 ### 🏠 Home
 <img src="app/src/main/java/com/example/buddyapp/screenshots/Homescreen.png" width="250"/>
@@ -40,7 +40,7 @@ It was created as a hands-on exercise to practice Kotlin and explore modern Andr
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - **Kotlin**
 - **Jetpack Compose** 
