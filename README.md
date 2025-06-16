@@ -24,7 +24,7 @@ It was created as a hands-on exercise to practice Kotlin and explore modern Andr
 ## 📸 Screenshots
 
 ### 🏠 Home
-<img src="app/src/main/java/com/example/buddyapp/screenshots/HomeScreen.png" width="250"/>
+<img src="app/src/main/java/com/example/buddyapp/screenshots/Homescreen.png" width="250"/>
 
 ### 🛒 Shopping List
 <img src="app/src/main/java/com/example/buddyapp/screenshots/ShoppingList.png" width="250"/>
