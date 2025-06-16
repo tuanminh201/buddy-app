@@ -1,7 +1,7 @@
 # Buddy App
 
 **Buddy App** is a simple personal Android project developed using **Kotlin**.  
-It was created as a hands-on exercise to practice Kotlin and explore modern Android development principles.
+It was created as a exercise to practice Kotlin and explore modern Android development principles.
 
 ---
 
