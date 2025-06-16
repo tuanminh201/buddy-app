@@ -1,27 +1,53 @@
 # Buddy App
 
-Buddy App is a personal Android project developed using **Kotlin** . It was built as a learning exercise for Kotlin skills and explore modern Android development practices.
+**Buddy App** is a simple personal Android project developed using **Kotlin**.  
+It was created as a hands-on exercise to practice Kotlin and explore modern Android development principles.
 
+---
 
-
-## Features
+## 📱 Features
 
 - **Shopping List**  
-  Create a list of items with quantities, mark them as completed, edit or delete them.
+  Add items with quantities, mark as done, edit, or delete them easily.
 
 - **Budget Tracker**  
-  Log your daily expenses and view the total amount spent.
+  Track your incomes and expenses, with visual total and color-coded balance.
 
 - **Tip Calculator**  
-  Calculate tip based on a given percentage, and split the total bill between multiple people.
+  Quickly calculate tips and split bills among friends.
 
 - **Unit Converter**  
-  Convert between units of length, weight, and temperature.
+  Convert units of length, weight, temperature, and currency (EUR ↔ USD).
 
-## Tech Stack
+---
 
-- Kotlin  
-- Jetpack Compose (no XML)  
-- Material3 Design  
-- Android Studio
+## 📸 Screenshots
 
+### 🏠 Home
+<img src="app/src/main/java/com/example/buddyapp/screenshots/HomeScreen.png" width="250"/>
+
+### 🛒 Shopping List
+<img src="app/src/main/java/com/example/buddyapp/screenshots/ShoppingList.png" width="250"/>
+
+### 💸 Budget Tracker
+<img src="app/src/main/java/com/example/buddyapp/screenshots/BudgetTracker.png" width="250"/>
+
+### 🧮 Tip Calculator
+<img src="app/src/main/java/com/example/buddyapp/screenshots/TipCalculator.png" width="250"/>
+
+### 🔄 Unit Converter
+<img src="app/src/main/java/com/example/buddyapp/screenshots/UnitConverter.png" width="250"/>
+
+---
+
+## 🛠 Tech Stack
+
+- **Kotlin**
+- **Jetpack Compose** 
+- **Material 3**
+- **Android Studio**
+
+---
+
+## 🚧 Note
+This project was built for educational purposes.  
